@@ -1,0 +1,28 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+/* Style the header */
+.header {
+  padding: 80px;
+  text-align: center;
+  background: black;
+  color: white;
+}
+
+.footer {
+  padding: 20px; /* Some padding */
+  text-align: center; /* Center text*/
+  background: #ddd; /* Grey background */
+}
+
+/* Increase the font size of the h1 element */
+.header h1 {
+  font-size: 60px;
+}
+
+/* Increase the font size of the h2 element */
+.header h2 {
+  font-size: 40px;
+}
