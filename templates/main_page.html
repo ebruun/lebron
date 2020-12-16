@@ -13,31 +13,34 @@
   <link href="static/css/main_page_styles.css" rel="stylesheet">
 
   <!-- Not implemented -->
-<!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script src="static/js/updates.js"></script> -->
-</head>
+<!--   <script src="static/js/updates.js"></script> -->
+
+</head>ß
 
 <body>
   <div class="header">
       <h1>LeBron James</h1>
       <h2 id="demo">How Many Points Left?</h2>
-      <!-- <button type="button" onclick="signUpUser()">Try it</button>
-      <input type="submit" name="submit_button" value="Do Something"> -->
   </div>
 
   <div class="footer">
-      <h2>Kareem: {{ value1 }}</h2>
-      <h2>LeBron: {{ value2 }}</h2>
-      <h2>DIFFERENCE : {{ value3 }}</h2>
-
-    <form action="/" method="post">
-        <button name="forwardBtn" type="submit">REFRESH</button>
-    </form>
-
+      <h2 id="points">{{ value3 }}</h2>
   </div>
 
   <div class="footer">
-    <h2>By Edvard & Gordon</h2>
+    <h1>By Edvard & Gordon</h1>
   </div>
+
+  <script>
+  var points = document.getElementById("points");
+
+    setInterval(() => {
+      fetch("{{ url_for('update_points') }}")
+      .then(response => {
+        response.text().then(t => {points.innerHTML = t})
+      });
+      }, 1000);
+  </script>
+
 
 </body>
