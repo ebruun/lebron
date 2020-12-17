@@ -3,36 +3,17 @@ body {
   margin: 0;
 }
 
-/* Style the header */
-.header {
-  padding: 80px;
-  text-align: center;
-  background: black;
-  color: white;
-}
-
 .footer {
-  padding: 20px; /* Some padding */
-  text-align: center; /* Center text*/
-  background: #ddd; /* Grey background */
-}
+  font-size: 15vmin;
+  margin-bottom: 0px;
+  margin-top: 0px;
 
-/* Increase the font size of the h1 element */
-.header h1 {
-  font-size: 60px;
-}
+  position: fixed;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
 
-/* Increase the font size of the h2 element */
-.header h2 {
-  font-size: 40px;
-}
-/* Increase the font size of the h1 element */
-.footer h1 {
-  padding: 0px; /* Some padding */
-  font-size: 20px;
-}
-
-/* Increase the font size of the h2 element */
-.footer h2 {
-  font-size: 200px;
+  padding: 5px;
+  border-bottom: 1px dotted black;
+  background: rgb(255, 255, 255); /* Grey background */
 }
