@@ -11,20 +11,18 @@
   <title>LeBron James Record</title>
 
   <link href="static/css/main_page_styles.css" rel="stylesheet">
+  <link href="static/css/main_page_tooltip.css" rel="stylesheet">
 </head>
 
-<body>
-  <div class="header">
-      <h1>LeBron James</h1>
-      <h2 id="demo">How Many Points Left?</h2>
-  </div>
+<body >
 
-  <div class="footer">
-      <h2 id="points">{{ value }}</h2>
-  </div>
+  <h2 class="footer" id="points">{{ value }}</h2>
 
-  <div class="footer">
-    <h1>By Edvard & Gordon</h1>
+  <div class="tooltip">
+    <img class="tooltipimage" src="/static/media/questionmark.png" alt="Image 1" />
+    <span
+      class="tooltiptext">Lebron James: how far is he from the all-time regular season points record?
+    </span>
   </div>
 
   <script>
