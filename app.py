@@ -9,9 +9,7 @@ app = Flask(__name__)
 @app.route("/")
 def start_page():
     point_diff = lebron_points_countdown()
-    return render_template(
-        "main_page.html",value=str(point_diff)
-    )
+    return render_template("main_page.html", value=str(point_diff))
 
 
 @app.route("/update_points")
@@ -23,4 +21,4 @@ def update_points():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
