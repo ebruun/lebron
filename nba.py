@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
 
+from nba_api.stats.endpoints.alltimeleadersgrids import AllTimeLeadersGrids
 from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
-from nba_api.stats.static import players
+
+
+# from nba_api.stats.static import players
 
 
 kareem_player_id = "76003"
@@ -25,8 +28,14 @@ def fetch_lebron_points_countdown():
     # lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
     # kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
 
-    lebron_total_points = players.find_players_by_first_name("lebron")[0]["id"]
-    kareem_total_points = players.find_players_by_first_name("kareem")[0]["id"]
+    aa = AllTimeLeadersGrids().pts_leaders.get_data_frame()
+
+    kareem_total_points = aa.loc[aa["PLAYER_ID"] == int(kareem_player_id), "PTS"].iloc[
+        0
+    ]
+    lebron_total_points = aa.loc[aa["PLAYER_ID"] == int(lebron_player_id), "PTS"].iloc[
+        0
+    ]
 
     return str(max(0, kareem_total_points - lebron_total_points))
 
