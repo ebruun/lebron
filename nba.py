@@ -21,10 +21,10 @@ def get_player_total_pts(id_num):
 
 def fetch_lebron_points_countdown():
     """On the road to become number 1, only Kareem to pass!"""
-    # lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
-    # kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
-    kareem_total_points = 10000
-    lebron_total_points = 9999
+    lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
+    kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
+    # kareem_total_points = 10000
+    # lebron_total_points = 9999
 
     return str(max(0, kareem_total_points - lebron_total_points))
 
