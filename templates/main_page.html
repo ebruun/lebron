@@ -17,13 +17,24 @@
 
 <body >
 
-  <h2 class="footer" id="points">{{ value }}</h2>
+<!--   <h2 class="footer" id="points">{{ value }}</h2>
 
   <div class="tooltip">
     <img class="tooltipimage" src="/static/media/questionmark.png" alt="Image 1" />
     <span
       class="tooltiptext">Lebron James: how far is he from the all-time regular season points record?
     </span>
+  </div> -->
+
+  <div class="tooltip">
+    <h2 class="header" id="points">{{ value }}</h2>
+    <span
+      class="tooltiptext">How far is LeBron James from the all-time regular season points record?
+    </span>
+  </div>
+
+  <div class="footer">
+    <h1> made by Edvard and Gordon </h1>
   </div>
 
 
@@ -35,7 +46,7 @@
       .then(response => {
         response.text().then(t => {points.innerHTML = t})
       });
-      }, 1000);
+      }, 5000);
   </script>
 
 </body>

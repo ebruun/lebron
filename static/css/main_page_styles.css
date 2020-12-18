@@ -3,17 +3,32 @@ body {
   margin: 0;
 }
 
-.footer {
-  font-size: 15vmin;
+.header {
+  font-size: 20vmin;
   margin-bottom: 0px;
   margin-top: 0px;
 
   position: fixed;
   left: 50%;
-  top: 5%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
 
   padding: 5px;
+/*   border-bottom: 1px dotted black; */
+  background: rgb(255, 255, 255); /* White background */
+}
+
+.footer {
+  font-size: 1vmin;
+  margin-bottom: 0px;
+  margin-top: 0px;
+
+  position: fixed;
+  left: 50%;
+  top: 95%;
+  transform: translate(-50%,-50%);
+
+  padding: 0vmin;
   border-bottom: 1px dotted black;
-  background: rgb(255, 255, 255); /* Grey background */
+  background: rgb(255, 255, 255); /* White background */
 }
