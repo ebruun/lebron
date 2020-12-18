@@ -1,0 +1,30 @@
+
+.tooltip {
+  font-size: 2vmin;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  font-size: 2vmin;
+
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translateX(-50%);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltipimage{
+  display: block;
+  width: 10vmin;
+
+  position: fixed;
+  left: 50%;
+  top: 35%;
+  transform: translateX(-50%);
+
+  padding: 10px;
+}
