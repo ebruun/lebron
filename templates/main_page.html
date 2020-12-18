@@ -14,6 +14,7 @@
   <link href="static/css/main_page_tooltip.css" rel="stylesheet">
 </head>
 
+
 <body >
 
   <h2 class="footer" id="points">{{ value }}</h2>
@@ -25,6 +26,7 @@
     </span>
   </div>
 
+
   <script>
   var points = document.getElementById("points");
 
@@ -33,7 +35,7 @@
       .then(response => {
         response.text().then(t => {points.innerHTML = t})
       });
-      }, 5000);
+      }, 1000);
   </script>
 
 </body>

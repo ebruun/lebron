@@ -5,6 +5,7 @@ from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
 
 kareem_player_id = "76003"
 lebron_player_id = "2544"
+
 cache_refresh_seconds = 5
 
 _cache = {}
@@ -28,6 +29,7 @@ def fetch_lebron_points_countdown():
 
 def lebron_points_countdown():
     cache_invalidation_time = datetime.now() - timedelta(seconds=cache_refresh_seconds)
+
     if _cache.get("timestamp", datetime.min) < cache_invalidation_time:
         _cache.update(
             {"timestamp": datetime.now(), "points": fetch_lebron_points_countdown()}
