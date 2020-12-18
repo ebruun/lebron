@@ -1,8 +1,13 @@
+from datetime import datetime, timedelta
+
 from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
 
 
 kareem_player_id = "76003"
 lebron_player_id = "2544"
+cache_refresh_seconds = 5
+
+_cache = {}
 
 
 def get_player_total_pts(id_num):
@@ -13,9 +18,19 @@ def get_player_total_pts(id_num):
     return total_pts
 
 
-def lebron_points_countdown():
+def fetch_lebron_points_countdown():
     """On the road to become number 1, only Kareem to pass!"""
     lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
     kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
 
     return str(max(0, kareem_total_points - lebron_total_points))
+
+
+def lebron_points_countdown():
+    cache_invalidation_time = datetime.now() - timedelta(seconds=cache_refresh_seconds)
+    if _cache.get("timestamp", datetime.min) < cache_invalidation_time:
+        _cache.update(
+            {"timestamp": datetime.now(), "points": fetch_lebron_points_countdown()}
+        )
+
+    return _cache["points"]
