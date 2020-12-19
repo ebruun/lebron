@@ -12,14 +12,6 @@ lebron_player_id = "2544"
 
 cache_refresh_seconds = 5
 
-proxies2 = [
-    "43.252.237.84:8080",
-    "198.50.152.64:23500",
-    "43.252.237.84:8080",
-    "87.140.8.148",
-    "118.27.1.112",
-]
-
 _cache = {}
 
 
@@ -36,7 +28,7 @@ def fetch_lebron_points_countdown():
     # lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
     # kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
 
-    aa = AllTimeLeadersGrids(proxy=proxies2[0]).pts_leaders.get_data_frame()
+    aa = AllTimeLeadersGrids().pts_leaders.get_data_frame()
 
     kareem_total_points = aa.loc[aa["PLAYER_ID"] == int(kareem_player_id), "PTS"].iloc[
         0
