@@ -94,17 +94,17 @@ def fetch_lebron_points_countdown():
     # lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
     # kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
 
-    proxies = get_proxies(50)
+    proxies = get_proxies(20)
     print("Total proxies\n", proxies, "\n")
-    time.sleep(1)
+    #time.sleep(1)
 
     working_proxies = check_proxies(proxies)
     print("\nWorking proxies\n", working_proxies, "\n")
-    time.sleep(1)
+    #time.sleep(1)
 
     api_data = get_stat_data(working_proxies)
     print(api_data)
-    time.sleep(1)
+    #time.sleep(1)
 
     kareem_total_points = api_data.loc[
         api_data["PLAYER_ID"] == int(kareem_player_id), "PTS"
