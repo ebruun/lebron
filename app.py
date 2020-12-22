@@ -27,4 +27,4 @@ def update_points():
 
 if __name__ == "__main__":
     #app.run()
-    serve(app, port=6060)
+    serve(app, port=8080)
