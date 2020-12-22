@@ -1,1 +1,1 @@
-web: gunicorn app:app --timeout 5
+ web: waitress-serve —port=$PORT app:app
