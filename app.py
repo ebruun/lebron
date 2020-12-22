@@ -1,9 +1,13 @@
 from flask import Flask, Response, render_template
+from waitress import serve
+from flask_cors import CORS
 
 from nba import lebron_points_countdown
 
 
+
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/")
@@ -22,4 +26,5 @@ def update_points():
 
 
 if __name__ == "__main__":
-    app.run()
+    #app.run()
+    serve(app, port=6060)
