@@ -43,7 +43,7 @@ def check_proxies(proxies):
         try:
             print(proxy)
             response = requests.get(
-                url, proxies={"http": proxy, "https": proxy}, timeout=0.5
+                url, proxies={"http": proxy, "https": proxy}, timeout=0.8
             )
             print(response.json())
             saved_proxies.append(proxy)
@@ -91,10 +91,10 @@ def fetch_lebron_points_countdown():
     # lebron_total_points = players.find_players_by_first_name('lebron' )[0]["id"]
     # kareem_total_points = players.find_players_by_first_name('kareem')[0]["id"]
 
-    proxies = get_proxies(50)
+    proxies = get_proxies(100)
     print("Total proxies\n", proxies, "\n")
 
-    working_proxies = check_proxies(proxies)
+    working_proxies = check_proxies(list(proxies)[0:20])
     print("\nWorking proxies\n", working_proxies, "\n")
 
     api_data = get_stat_data(working_proxies)

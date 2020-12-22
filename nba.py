@@ -77,7 +77,7 @@ def get_stat_data(working_proxies):
 
     if aa is None:
         print("dont use proxy")
-        aa = AllTimeLeadersGrids().pts_leaders.get_data_frame()
+        #aa = AllTimeLeadersGrids().pts_leaders.get_data_frame()
         return aa
 
 
@@ -96,15 +96,15 @@ def fetch_lebron_points_countdown():
 
     proxies = get_proxies(20)
     print("Total proxies\n", proxies, "\n")
-    #time.sleep(1)
+    # time.sleep(1)
 
     working_proxies = check_proxies(proxies)
     print("\nWorking proxies\n", working_proxies, "\n")
-    #time.sleep(1)
+    # time.sleep(1)
 
     api_data = get_stat_data(working_proxies)
     print(api_data)
-    #time.sleep(1)
+    # time.sleep(1)
 
     kareem_total_points = api_data.loc[
         api_data["PLAYER_ID"] == int(kareem_player_id), "PTS"
