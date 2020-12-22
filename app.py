@@ -7,7 +7,7 @@ from nba import lebron_points_countdown
 
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "http://localhost:port"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/")
