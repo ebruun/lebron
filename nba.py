@@ -1,18 +1,16 @@
 from datetime import datetime, timedelta
 
-from nba_api.stats.endpoints.alltimeleadersgrids import AllTimeLeadersGrids
+import requests
 from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
-
-
-# from nba_api.stats.static import players
 
 
 kareem_player_id = "76003"
 lebron_player_id = "2544"
 
 cache_refresh_seconds = 5
-
 _cache = {}
+
+local_proxy = "http://2f32d1f76740.ngrok.io/update_points"
 
 
 def get_player_total_pts(id_num):
@@ -25,19 +23,14 @@ def get_player_total_pts(id_num):
 
 def fetch_lebron_points_countdown():
     """On the road to become number 1, only Kareem to pass!"""
-    # lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
-    # kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
-
-    aa = AllTimeLeadersGrids().pts_leaders.get_data_frame()
-
-    kareem_total_points = aa.loc[aa["PLAYER_ID"] == int(kareem_player_id), "PTS"].iloc[
-        0
-    ]
-    lebron_total_points = aa.loc[aa["PLAYER_ID"] == int(lebron_player_id), "PTS"].iloc[
-        0
-    ]
+    lebron_total_points = get_player_total_pts(id_num=lebron_player_id)
+    kareem_total_points = get_player_total_pts(id_num=kareem_player_id)
 
     return str(max(0, kareem_total_points - lebron_total_points))
+
+
+def fetch_lebron_points_countdown_local():
+    return requests.get(local_proxy).text
 
 
 def lebron_points_countdown():
