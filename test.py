@@ -9,18 +9,9 @@ from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
 
 from nba_api.stats.static import players
 
-#print(players.find_players_by_full_name('giannis'))
-
-
-
-
 
 id = '2544' #LeBron
 #id = '203507' #Giannis
-
-
-
-
 
 def check_if_game_today():
 
@@ -38,10 +29,10 @@ def check_if_game_today():
         print("No Game Today")
 
         #just for testing
-        #game_ID = '0022000002' 
-        #game_TIME = None
-        game_ID = False
-        game_TIME = False
+        game_ID = '0022000002' 
+        game_TIME = None
+        #game_ID = False
+        #game_TIME = False
     else:
         print("There is a Game Today")
         game_ID = df_today['GAME_ID'].values[0]
@@ -49,16 +40,21 @@ def check_if_game_today():
         
     return (game_ID, game_TIME)
 
-aa = check_if_game_today()
-
-get_url = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{game}.json".format(game = game_ID)
 
 
-print(get_url)
+def get_player_dynamic_pts(game_ID):
+    get_url = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{game}.json".format(game = game_ID)
 
-data = requests.get(get_url).json()
+    print(get_url)
+    try:
+        data = requests.get(get_url).json()
+        return data
+    except:
+        print("game hasn't started yet")
+        data = None
+        return data
 
-print(data)
+
 
 def json_extract(obj, key, key2, player_id):
     """Recursively fetch values from nested JSON."""
@@ -78,15 +74,20 @@ def json_extract(obj, key, key2, player_id):
                 #Save his points
                 elif k == key2 and save_flag:
                     print("save points")
-                    return int(v)
+                    arr.append(v)
+                    save_flag = False
         elif isinstance(obj, list):
             for item in obj:
                 extract(item, arr, key, key2, save_flag)
         return arr
 
     values = extract(obj, arr, key, key2, save_flag)
-    return values
+    return values[0]
 
-points = json_extract(data,'personId', 'assists',id)
+game_ID, game_TIME = check_if_game_today()
+
+data = get_player_dynamic_pts(game_ID)
+
+points = json_extract(data,'personId', 'points',id)
 
 print(points)
