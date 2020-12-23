@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 import requests
 from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
+from nba_api.stats.endpoints.boxscoreadvancedv2 import BoxScoreAdvancedV2
 
 
 kareem_player_id = "76003"

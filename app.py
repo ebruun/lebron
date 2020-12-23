@@ -1,14 +1,14 @@
 from flask import Flask, Response, render_template
 
-from nba import fetch_lebron_points_countdown_local
-
+#from nba import fetch_lebron_points_countdown_local as fetch_points
+from nba import fetch_lebron_points_countdown as fetch_points
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def start_page():
-    point_diff = fetch_lebron_points_countdown_local()
+    point_diff = fetch_points()
 
     return render_template("main_page.html", value=str(point_diff))
 
@@ -16,7 +16,7 @@ def start_page():
 @app.route("/update_points")
 def update_points():
     def generate():
-        return fetch_lebron_points_countdown_local()
+        return fetch_points()
 
     return Response(generate(), mimetype="text")
 
