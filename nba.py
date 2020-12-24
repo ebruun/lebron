@@ -1,16 +1,22 @@
 from datetime import datetime, timedelta, date
-
 import requests
+
 from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
-
 from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
-from nba_api.stats.endpoints.boxscoreadvancedv2 import BoxScoreAdvancedV2
+#from nba_api.stats.static import players
+#from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
 
-from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
 
 kareem_player_id = "76003"
+#kareem_static_points = get_player_static_pts(player_ID=kareem_player_id)
+kareem_static_points = 38387
+
 #lebron_player_id = "2544"
+#lebron_player_id = '201566' #Westbrook (playing today)
 lebron_player_id = '203507' #Giannis (playing today)
+
+#team = 'LAL'
+team = 'MIL'
 
 cache_refresh_seconds = 5
 _cache = {}
@@ -20,21 +26,22 @@ local_proxy = "http://2f32d1f76740.ngrok.io/update_points"
 
 def check_if_game_today(player_ID,n_games,date_today):
 
-    df = PlayerNextNGames(player_id = player_ID, number_of_games=n_games).next_n_games.get_data_frame()
+    # Once the game starts it is taken off the "next games" list which is referenced here...
+    # This returns an error because the 'df_today' variable is now empty
+    # once the game starts can use the "game log" endpoint to grab the game ID
 
-    df_today = df.loc[(df['GAME_DATE'] == date_today)]
+    #df = PlayerNextNGames(player_id = player_ID, number_of_games=n_games).next_n_games.get_data_frame()
+    #df_today = df.loc[(df['GAME_DATE'] == date_today)]
+
+    df = LeagueGameLog().league_game_log.get_data_frame()
+    df_today = df.loc[(df['GAME_DATE'] == date_today) & (df['TEAM_ABBREVIATION'] == team)]
 
     if df_today.empty:
-        #just for testing
-        game_ID = '0022000002' 
-        game_TIME = None
-        #game_ID = None
-        #game_TIME = None
+        game_ID = None    
     else:  
         game_ID = df_today['GAME_ID'].values[0]
-        game_TIME = df_today['GAME_TIME'].values[0]    
         
-    return (game_ID, game_TIME)
+    return game_ID
 
 
 def get_player_static_pts(player_ID):
@@ -46,12 +53,13 @@ def get_player_static_pts(player_ID):
 
 
 def get_player_live_pts(game_ID, player_ID):
+
     get_url = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{}.json".format(game_ID)
     print(get_url)
      
     try:
         data = requests.get(get_url).json()
-        return json_extract(data,'personId', 'assists',player_ID)
+        return json_extract(data,'personId', 'points', player_ID)
     except:
         print("game hasn't started yet")
         return 0
@@ -71,12 +79,12 @@ def json_extract(obj, key, key2, player_ID):
 
                 #Find Lebron
                 elif k == key and v == int(player_ID): 
-                    print("we found him")
+                    #print("we found him", v)
                     save_flag = True
 
                 #Save his points
                 elif k == key2 and save_flag:
-                    print("save points")
+                    #print("save points", v)
                     arr.append(v)
                     save_flag = False
 
@@ -93,18 +101,18 @@ def fetch_lebron_points_countdown():
     """On the road to become number 1, only Kareem to pass!"""
 
     today = date.today()
-    diff = timedelta(0)
-    today = (today- diff).strftime('%b %d, %Y').upper()
+    #diff = timedelta(0)
+    #today = (today- diff).strftime('%b %d, %Y').upper()
+    today = date.today().strftime('%Y-%m-%d')
 
-    game_id, game_time = check_if_game_today(player_ID = lebron_player_id, n_games = 2, date_today = today)
+    game_id = check_if_game_today(player_ID = lebron_player_id, n_games = 2, date_today = today)
     lebron_live_points = 0
 
     if game_id:
-    #if game_id and game_time < some_time_limit :
-        print("There is a Game Today, live update")
+        print("There is a game on - LIVE UPDATE")
         lebron_live_points = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
     else:
-        print("There is no Game Today, static points only")
+        print("There is no game on - STATIC POINTS ONLY")
     
     # Need a condition that stops live updating a certain amount of time after
     # the games is finished, otherwise might have a case where the "static" score is updated
@@ -112,7 +120,9 @@ def fetch_lebron_points_countdown():
     # how soon after a game is done that the "static" score is updated
 
     lebron_static_points = get_player_static_pts(player_ID=lebron_player_id)
-    kareem_static_points = get_player_static_pts(player_ID=kareem_player_id)
+    
+
+    print("static points = {}, live points = {}\n".format(lebron_static_points, lebron_live_points))
 
     return str(max(0, kareem_static_points - (lebron_static_points + lebron_live_points)))
 
@@ -130,3 +140,4 @@ def lebron_points_countdown():
         )
 
     return _cache["points"]
+
