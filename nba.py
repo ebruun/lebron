@@ -6,7 +6,6 @@ import requests
 #from nba_api.stats.static import players
 #from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
 
-
 kareem_player_id = "76003"
 kareem_static_points = 38387
 
@@ -45,10 +44,15 @@ def check_if_game_today():
 
         game_date = datetime.strptime(game_date, "%Y-%m-%dT%H:%M")
         #game_len = row['boxscore']['gameLength']
-        #game_len = row['boxscore']['period']
+
+        #This will tell you when game over...use it for "live --> static"?
+        # game_status = row['boxscore']['statusDesc']
+        # 'Final' = game done
+        # 'period # = game ongoing
+        # Null = game not started
 
         # Need to make this nicer, just hacking it together now
-        # maybe more robust is checking the "period" value to see if started
+        # maybe use statusDesc?
         if game_date.day == today.day:
             print("there is a game today")
             
