@@ -13,32 +13,32 @@ from nba_api.stats.static import players
 id = '2544' #LeBron
 #id = '203507' #Giannis
 
-def check_if_game_today():
+# def check_if_game_today():
 
-    today = date.today()
-    diff = timedelta(0)
-    today = (today- diff).strftime('%b %d, %Y').upper()
+#     today = date.today()
+#     diff = timedelta(0)
+#     today = (today- diff).strftime('%b %d, %Y').upper()
 
-    df = PlayerNextNGames(player_id = id, number_of_games=5).next_n_games.get_data_frame()
+#     df = PlayerNextNGames(player_id = id, number_of_games=5).next_n_games.get_data_frame()
 
-    df_today = df.loc[(df['GAME_DATE'] == today)]
+#     df_today = df.loc[(df['GAME_DATE'] == today)]
 
-    print(df_today)
+#     print(df_today)
 
-    if df_today.empty:
-        print("No Game Today")
+#     if df_today.empty:
+#         print("No Game Today")
 
-        #just for testing
-        game_ID = '0022000002' 
-        game_TIME = None
-        #game_ID = False
-        #game_TIME = False
-    else:
-        print("There is a Game Today")
-        game_ID = df_today['GAME_ID'].values[0]
-        game_TIME = df_today['GAME_TIME'].values[0]    
+#         #just for testing
+#         game_ID = '0022000002' 
+#         game_TIME = None
+#         #game_ID = False
+#         #game_TIME = False
+#     else:
+#         print("There is a Game Today")
+#         game_ID = df_today['GAME_ID'].values[0]
+#         game_TIME = df_today['GAME_TIME'].values[0]    
         
-    return (game_ID, game_TIME)
+#     return (game_ID, game_TIME)
 
 
 
@@ -54,17 +54,54 @@ def get_player_dynamic_pts(game_ID):
         data = None
         return data
 
-def get_player_static_pts():
-    get_url = "https://stats.nba.com/stats/leagueLeaders?ActiveFlag=No&LeagueID=00&PerMode=Totals&Scope=S&Season=All+Time&SeasonType=Regular+Season&StatCategory=PTS".format(game_ID)
+def get_player_static_pts(player_ID):
+    get_url = "https://stats.nba.com/stats/leagueLeaders?ActiveFlag=No&LeagueID=00&PerMode=Totals&Scope=S&Season=All+Time&SeasonType=Regular+Season&StatCategory=PTS"
 
-    print(get_url)
-    try:
-        data = requests.get(get_url).json()
-        return data
-    except:
-        print("game hasn't started yet")
-        data = None
-        return data
+    data = requests.get(get_url).json() 
+
+    for row in data['resultSet']['rowSet']:
+        if row[0] == int(player_ID):
+            total_pts = row[21]
+            break
+
+    return total_pts
+
+
+def check_if_game_today():
+
+    today = datetime.now()
+
+    idx = today.month
+
+    if idx == 12:
+        idx = 0
+
+    get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=lakers"
+
+    data = requests.get(get_url).json() 
+    data = data['payload']['monthGroups'][idx]['games']
+
+    game_ID = None
+
+    for row in data:
+        game_date = row['profile']['dateTimeEt']
+
+        game_date = datetime.strptime(game_date, "%Y-%m-%dT%H:%M")
+        game_len = row['boxscore']['gameLength']
+ 
+        if game_date.day == today.day:
+            print("there is a game today")
+
+            if today.hour >= game_date.hour and today.minute >= game_date.minute:
+                print("game started")
+                game_ID = row['profile']['gameId']
+                return game_ID
+            else:
+                print("game not started")
+            
+
+    print("there is no game today")    
+    return game_ID
 
 
 
@@ -96,20 +133,13 @@ def json_extract(obj, key, key2, player_id):
     values = extract(obj, arr, key, key2, save_flag)
     return values[0]
 
-game_ID, game_TIME = check_if_game_today()
+game_ID = check_if_game_today()
+
 
 data = get_player_dynamic_pts(game_ID)
 #points = json_extract(data,'personId', 'points',id)
 #print(points)
 
-data = get_player_static_pts()
-#points = json_extract(data,'1', '3','LeBron James')
-
-aa = data['resultSet']['rowSet']
-
-for row in aa:
-    if row[0] == int(id):
-        points = row[21]
-        break
-
+points = get_player_static_pts(player_ID = id)
 print(points)
+
