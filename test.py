@@ -54,6 +54,18 @@ def get_player_dynamic_pts(game_ID):
         data = None
         return data
 
+def get_player_static_pts():
+    get_url = "https://stats.nba.com/stats/leagueLeaders?ActiveFlag=No&LeagueID=00&PerMode=Totals&Scope=S&Season=All+Time&SeasonType=Regular+Season&StatCategory=PTS".format(game_ID)
+
+    print(get_url)
+    try:
+        data = requests.get(get_url).json()
+        return data
+    except:
+        print("game hasn't started yet")
+        data = None
+        return data
+
 
 
 def json_extract(obj, key, key2, player_id):
@@ -87,7 +99,17 @@ def json_extract(obj, key, key2, player_id):
 game_ID, game_TIME = check_if_game_today()
 
 data = get_player_dynamic_pts(game_ID)
+#points = json_extract(data,'personId', 'points',id)
+#print(points)
 
-points = json_extract(data,'personId', 'points',id)
+data = get_player_static_pts()
+#points = json_extract(data,'1', '3','LeBron James')
+
+aa = data['resultSet']['rowSet']
+
+for row in aa:
+    if row[0] == int(id):
+        points = row[21]
+        break
 
 print(points)

@@ -45,9 +45,19 @@ def check_if_game_today(player_ID,n_games,date_today):
 
 
 def get_player_static_pts(player_ID):
-    career = PlayerCareerStats(player_id=player_ID)
-    totals_reg = career.career_totals_regular_season
-    total_pts = totals_reg.get_data_frame()["PTS"][0]
+    #career = PlayerCareerStats(player_id=player_ID)
+    #totals_reg = career.career_totals_regular_season
+    #total_pts = totals_reg.get_data_frame()["PTS"][0]
+
+    get_url = "https://stats.nba.com/stats/leagueLeaders?ActiveFlag=No&LeagueID=00&PerMode=Totals&Scope=S&Season=All+Time&SeasonType=Regular+Season&StatCategory=PTS"
+
+    data = requests.get(get_url).json()
+    data =  data['resultSet']['rowSet']
+
+    for row in data:
+        if row[0] == int(player_ID):
+            total_pts = row[21]
+            break
 
     return total_pts
 
