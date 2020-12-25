@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, date
 import requests
 
-from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
+#from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
 from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
 #from nba_api.stats.static import players
 #from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
@@ -33,13 +33,15 @@ def check_if_game_today(player_ID,n_games,date_today):
     #df = PlayerNextNGames(player_id = player_ID, number_of_games=n_games).next_n_games.get_data_frame()
     #df_today = df.loc[(df['GAME_DATE'] == date_today)]
 
-    df = LeagueGameLog().league_game_log.get_data_frame()
-    df_today = df.loc[(df['GAME_DATE'] == date_today) & (df['TEAM_ABBREVIATION'] == team)]
+    # df = LeagueGameLog().league_game_log.get_data_frame()
+    # df_today = df.loc[(df['GAME_DATE'] == date_today) & (df['TEAM_ABBREVIATION'] == team)]
 
-    if df_today.empty:
-        game_ID = None    
-    else:  
-        game_ID = df_today['GAME_ID'].values[0]
+    # if df_today.empty:
+    #     game_ID = None    
+    # else:  
+    #     game_ID = df_today['GAME_ID'].values[0]
+
+    game_ID = None
         
     return game_ID
 
