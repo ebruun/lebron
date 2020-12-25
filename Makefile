@@ -2,10 +2,13 @@ VENV_NAME=lebron-james
 VENV_SHELL=$(VENV_NAME)/bin/activate
 GIT_HEAD=$(shell git rev-parse HEAD)
 
+lebron:
+	. $(VENV_SHELL) && python app.py
+
 build:
 	docker build -t $(GIT_HEAD) .
 
-lebron:
+run:
 	docker run -d -p 5000:5000 $(GIT_HEAD)
 
 setup:
