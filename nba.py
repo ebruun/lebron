@@ -10,12 +10,9 @@ import requests
 kareem_player_id = "76003"
 kareem_static_points = 38387
 
-#lebron_player_id = "2544"
+lebron_player_id = "2544"
 #lebron_player_id = '201566' #Westbrook (playing today)
-lebron_player_id = '203507' #Giannis (playing today)
-
-team = 'LAL'
-#team = 'MIL'
+#lebron_player_id = '203507' #Giannis (playing today)
 
 cache_refresh_seconds = 5
 _cache = {}
@@ -35,8 +32,9 @@ def check_if_game_today():
         today = today - timedelta(1)
         today.replace(hour = 23, minute = 59)
 
-    #get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=lakers"
-    get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=bucks"
+    get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=lakers"
+    #get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=bucks"
+    
     data = requests.get(get_url).json() 
     data = data['payload']['monthGroups'][idx]['games']
 
@@ -47,8 +45,10 @@ def check_if_game_today():
 
         game_date = datetime.strptime(game_date, "%Y-%m-%dT%H:%M")
         #game_len = row['boxscore']['gameLength']
+        #game_len = row['boxscore']['period']
 
-        #Need to make this nicer, just hacking it together now
+        # Need to make this nicer, just hacking it together now
+        # maybe more robust is checking the "period" value to see if started
         if game_date.day == today.day:
             print("there is a game today")
             
