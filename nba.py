@@ -1,10 +1,7 @@
 from datetime import datetime, timedelta, date
+from pytz import timezone
 import requests
 
-#from nba_api.stats.endpoints.playercareerstats import PlayerCareerStats
-#from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
-#from nba_api.stats.static import players
-#from nba_api.stats.endpoints.playernextngames import PlayerNextNGames
 
 kareem_player_id = "76003"
 kareem_static_points = 38387
@@ -21,7 +18,7 @@ local_proxy = "http://2f32d1f76740.ngrok.io/update_points"
 
 def check_if_game_today():
 
-    today = datetime.now()
+    today = datetime.now(timezone('EST'))
 
     if today.month == 12:
         idx = 0
@@ -32,14 +29,13 @@ def check_if_game_today():
         today.replace(hour = 23, minute = 59)
 
     get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=lakers"
-    #get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=bucks"
     
     data = requests.get(get_url).json() 
     data = data['payload']['monthGroups'][idx]['games']
 
     game_ID = None
 
-    print("today is ", today)
+    print("today is {}-{}, hour: {}".format(today.month, today.day, today.hour))
     for row in data:
         game_date = row['profile']['dateTimeEt']
 
@@ -48,7 +44,6 @@ def check_if_game_today():
 
         game_status = row['boxscore']['statusDesc']
         # 'Final' = game done
-        # 'period # = game ongoing
         # Null = game not started
 
         if game_date.day == today.day:
