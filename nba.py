@@ -54,7 +54,7 @@ def check_if_game_today():
         # Need to make this nicer, just hacking it together now
         # maybe use statusDesc?
         if game_date.day == today.day:
-            print("there is a game today")
+            print("there is a game today", game_date.hour, game_date.minute, today.hour, today.minute )
             
             if today.hour == game_date.hour:   
                 if today.minute >= game_date.minute:
