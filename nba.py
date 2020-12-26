@@ -39,6 +39,7 @@ def check_if_game_today():
 
     game_ID = None
 
+    print("today is ", today)
     for row in data:
         game_date = row['profile']['dateTimeEt']
 
@@ -54,14 +55,13 @@ def check_if_game_today():
             print("there is a game today")
 
             if game_status:
-                print("game has started", game_date.hour, game_date.minute, game_status)
+                print("game has started, in {} quarter".format(game_status))
                 game_ID = row['profile']['gameId']
                 return game_ID
             else:
                 print("game not started")
                 return game_ID
-
-            
+          
     print("there is no game today")    
     return game_ID
 
@@ -82,13 +82,13 @@ def get_player_static_pts(player_ID):
 def get_player_live_pts(game_ID, player_ID):
 
     get_url = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{}.json".format(game_ID)
-    print(get_url)
-     
+    
     try:
+        print("Get points from: ", get_url)
         data = requests.get(get_url).json()
         return json_extract(data,'personId', 'points', player_ID)
     except:
-        print("game hasn't started yet")
+        print("error getting points from: ", get_url)
         return 0
 
 
@@ -131,10 +131,7 @@ def fetch_lebron_points_countdown():
     lebron_live_points = 0
 
     if game_id:
-        print("There is a game on - LIVE UPDATE - {}".format(game_id))
         lebron_live_points = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
-    else:
-        print("There is no game on - STATIC POINTS ONLY")
     
     # Need a condition that stops live updating a certain amount of time after
     # the games is finished, otherwise might have a case where the "static" score is updated
