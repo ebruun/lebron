@@ -45,32 +45,22 @@ def check_if_game_today():
         game_date = datetime.strptime(game_date, "%Y-%m-%dT%H:%M")
         #game_len = row['boxscore']['gameLength']
 
-        #This will tell you when game over...use it for "live --> static"?
-        # game_status = row['boxscore']['statusDesc']
+        game_status = row['boxscore']['statusDesc']
         # 'Final' = game done
         # 'period # = game ongoing
         # Null = game not started
 
-        # Need to make this nicer, just hacking it together now
-        # maybe use statusDesc?
         if game_date.day == today.day:
-            print("there is a game today", game_date.hour, game_date.minute, today.hour, today.minute )
-            
-            if today.hour == game_date.hour:   
-                if today.minute >= game_date.minute:
-                    print("game started")
-                    game_ID = row['profile']['gameId']
-                    return game_ID
-                else:
-                    print("game not started")
-                    return game_ID
-            elif today.hour > game_date.hour: 
-                    print("game started")
-                    game_ID = row['profile']['gameId']
-                    return game_ID
+            print("there is a game today")
+
+            if game_status:
+                print("game has started", game_date.hour, game_date.minute, game_status)
+                game_ID = row['profile']['gameId']
+                return game_ID
             else:
                 print("game not started")
                 return game_ID
+
             
     print("there is no game today")    
     return game_ID
