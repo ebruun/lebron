@@ -42,13 +42,9 @@ def check_if_game_today():
             print("there is a game today")
 
             if game_status:
-                if game_status == 'Final':
-                    print("game is finished")
-                    return game_ID
-                else:
-                    print("game has started, in {} half".format(game_status))
-                    game_ID = row['profile']['gameId']
-                    return game_ID
+                print("game has started")
+                game_ID = row['profile']['gameId']
+                return game_ID
             else:
                 print("game not started")
                 return game_ID
@@ -75,13 +71,17 @@ def get_player_live_pts(game_ID, player_ID):
     """ get the data from the URL for the game being played """
     get_url = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{}.json".format(game_ID)
     
+    #boxscore status for some reason updates much faster than teamschedule .json
     try:
         print("Get points from: ", get_url)
         data = requests.get(get_url).json()
-        return json_extract(data,'personId', 'points', player_ID)
+        status = data['game']['gameStatusText']
+        return json_extract(data,'personId', 'points', player_ID), status
     except:
         print("error getting points from: ", get_url)
-        return 0
+        return 0, None
+
+    
 
 
 def json_extract(obj, key, key2, player_ID):
@@ -121,13 +121,12 @@ def fetch_lebron_points_countdown():
     lebron_live_points = 0
 
     if game_id:
-        lebron_live_points = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
+        lebron_live_points, game_finished = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
+
+        if game_finished:
+            print('Game Status: ', game_finished)
+            lebron_live_points = 0    
     
-    # Need a condition that stops live updating a certain amount of time after
-    # the games is finished, otherwise might have a case where the "static" score is updated
-    # while it's still adding the "live" score from the finished game. Need to get a sense of
-    # how soon after a game is done that the "static" score is updated. Right now once the status
-    # changes to "Final", live_updating stops. But is this valid?
 
     lebron_static_points = get_player_static_pts(player_ID=lebron_player_id)
     
