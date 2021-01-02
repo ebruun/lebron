@@ -18,6 +18,8 @@ def check_if_game_today():
     # based on .json format
     if today.month == 12:
         idx = 0
+    else:
+        idx = today.month
 
     # edge case, if the game goes into next day (2am) reset the date to start
     if today.hour < 2:
