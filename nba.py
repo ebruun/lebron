@@ -15,7 +15,7 @@ def check_if_game_today():
     """ check if there is a game today, and live updating required """
     today = datetime.now(timezone('EST'))
 
-    # based on .json format
+    # based on .json format, set December to 0
     if today.month == 12:
         idx = 0
     else:
@@ -123,13 +123,12 @@ def fetch_lebron_points_countdown():
     lebron_live_points = 0
 
     if game_id:
-        lebron_live_points, game_finished = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
+        lebron_live_points, game_status = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
+        print('Game Status: ', game_status)
 
-        if game_finished:
-            print('Game Status: ', game_finished)
+        if game_status == "Final":
             lebron_live_points = 0    
     
-
     lebron_static_points = get_player_static_pts(player_ID=lebron_player_id)
     
     print("static points = {}, live points = {}\n".format(lebron_static_points, lebron_live_points))
