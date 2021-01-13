@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template
 
 #from nba import fetch_lebron_points_countdown_local as fetch_points
-from nba import fetch_lebron_points_countdown as fetch_points
+from nba import lebron_points_countdown as fetch_points
 
 app = Flask(__name__)
 

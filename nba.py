@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 from pytz import timezone
 import requests
 
@@ -7,6 +7,8 @@ kareem_player_id = "76003"
 kareem_static_points = 38387
 
 lebron_player_id = "2544"
+
+update_buffer = 30 #assume it takes 30 mins to update the static page
 
 cache_refresh_seconds = 5
 _cache = {}
@@ -29,7 +31,7 @@ def check_if_game_today():
     get_url = "https://ca.global.nba.com/stats2/team/schedule.json?countryCode=CA&locale=en&teamCode=lakers"
     
     data = requests.get(get_url).json() 
-    data = data['payload']['monthGroups'][idx]['games']
+    data = data['payload']['monthGroups'][idx]['games'] #games in the month
 
     game_ID = None
 
@@ -46,19 +48,34 @@ def check_if_game_today():
             if game_status:
                 print("game has started")
                 game_ID = row['profile']['gameId']
-                return game_ID
+                return game_ID, game_date
             else:
                 print("game not started")
-                return game_ID
+                return game_ID, game_date
           
     print("there is no game today")    
-    return game_ID
+    return None, None
+
+
+def check_if_update_finished(game_date, duration):
+    end_time = game_date + timedelta(minutes = duration)
+
+    end_time = end_time.replace(tzinfo=timezone('US/Eastern'))
+
+    today = datetime.now(timezone('US/Eastern'))
+
+    elapsed = (today - end_time).total_seconds()/60
+
+    if elapsed > update_buffer:
+        return True 
+    else:
+        return False
+
 
 
 def get_player_static_pts(player_ID):
     """ get the recorded total points scored by a player """
     get_url = "https://stats.nba.com/stats/leagueLeaders?ActiveFlag=No&LeagueID=00&PerMode=Totals&Scope=S&Season=All+Time&SeasonType=Regular+Season&StatCategory=PTS"
-
     data = requests.get(get_url).json() 
 
     for row in data['resultSet']['rowSet']:
@@ -78,12 +95,12 @@ def get_player_live_pts(game_ID, player_ID):
         print("Get points from: ", get_url)
         data = requests.get(get_url).json()
         status = data['game']['gameStatusText']
-        return json_extract(data,'personId', 'points', player_ID), status
+        duration = data['game']['duration']
+
+        return json_extract(data,'personId', 'points', player_ID), status, duration
     except:
         print("error getting points from: ", get_url)
-        return 0, None
-
-    
+        return 0, None, None
 
 
 def json_extract(obj, key, key2, player_ID):
@@ -119,15 +136,20 @@ def json_extract(obj, key, key2, player_ID):
 def fetch_lebron_points_countdown():
     """On the road to become number 1, only Kareem to pass!"""
 
-    game_id = check_if_game_today()
+    game_id, game_date = check_if_game_today()
     lebron_live_points = 0
 
     if game_id:
-        lebron_live_points, game_status = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
+        lebron_live_points, game_status, duration = get_player_live_pts(game_ID = game_id, player_ID = lebron_player_id)
         print('Game Status: ', game_status)
 
         if game_status == "Final":
-            lebron_live_points = 0    
+            if check_if_update_finished(game_date, duration):
+                print("Game Finished: Enough time elapsed to have updated static")
+                lebron_live_points = 0  
+            else:
+                print("Game Finished: Still updating static")
+
     
     lebron_static_points = get_player_static_pts(player_ID=lebron_player_id)
     
@@ -137,6 +159,7 @@ def fetch_lebron_points_countdown():
 
 
 def lebron_points_countdown():
+    """buffer, called from flask app"""
     cache_invalidation_time = datetime.now() - timedelta(seconds=cache_refresh_seconds)
 
     if _cache.get("timestamp", datetime.min) < cache_invalidation_time:
